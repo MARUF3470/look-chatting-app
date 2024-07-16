@@ -50,6 +50,12 @@ const LoginForm = () => {
       });
       return router.push("/");
     }
+    if (!signInData?.ok) {
+      toast({
+        variant: "destructive",
+        description: signInData?.error,
+      });
+    }
   };
 
   return (

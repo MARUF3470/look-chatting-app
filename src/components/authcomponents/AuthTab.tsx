@@ -1,12 +1,26 @@
+"use client";
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoginForm from "./LoginForm";
 import RegistrationForm from "./RegistrationForm";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+import { toast } from "../ui/use-toast";
 
-const AuthTab = async () => {
-  const session = await getServerSession(authOptions);
-  console.log("------->", session);
+const AuthTab = () => {
+  const { status } = useSession();
+  const router = useRouter();
+  console.log(status);
+  useEffect(() => {
+    if (status === "authenticated") {
+      toast({
+        variant: "default",
+        description: "You are already logged in.",
+      });
+      return router.push("/");
+    }
+  }, [status]);
   return (
     <Tabs defaultValue="login" className="w-[400px] border p-5">
       <h4 className="text-center mb-5">Authentication</h4>
