@@ -1,61 +1,63 @@
-import db from "@/lib/db"
-import { hash } from "bcrypt"
-import { NextResponse } from "next/server"
-
-import { z } from "zod";
-
-const userSchema = z.object({
-    username: z
-        .string()
-        .min(2, {
-            message: "Email must be at least 2 characters.",
-        })
-        .max(100),
-    email: z.string().min(11, {
-        message: "Email must be at least 11 characters.",
-    }),
-    password: z
-        .string()
-        .min(1, {
-            message: "Password is requied.",
-        })
-        .min(6, {
-            message: "Password must be at least 6 characters.",
-        }),
-    image: z
-        .instanceof(File)
-        .refine((file) => file.size <= 5 * 1024 * 1024, {
-            message: "Image size should be less than 5MB.",
-        })
-        .optional(), // Make image optional in the schema
-});
+import db from "@/lib/db";
+import { hash } from "bcrypt";
+import { NextResponse } from "next/server";
+import { join } from "path";
+import { writeFile, mkdir } from "fs/promises";
 
 export const POST = async (req: Request) => {
     try {
-        const body = await req.json()
-        const { email, username, password } = userSchema.parse(body)
+        const data = await req.formData();
+        const username = data.get("username");
+        const email = data.get("email");
+        const password = data.get("password");
+        const image = data.get("image");
+
+        if (typeof username !== "string" || typeof email !== "string" || typeof password !== "string") {
+            return NextResponse.json({ message: "Invalid input data" }, { status: 400 });
+        }
+
+        let imagePath = null;
+        if (image instanceof File) {
+            const buffer = Buffer.from(await image.arrayBuffer());
+            const uploadDir = join(process.cwd(), "public", "uploads");
+            const uniqueName = Date.now() + "_";
+            const imgExt = image.name.split(".").pop();
+            const filename = uniqueName + "." + imgExt;
+            imagePath = `/uploads/${filename}`;
+
+            // Ensure the upload directory exists
+            await mkdir(uploadDir, { recursive: true });
+
+            await writeFile(`${uploadDir}/${filename}`, buffer);
+        }
+
         const existingEmail = await db.user.findUnique({
             where: { email: email }
-        })
+        });
         if (existingEmail) {
-            return NextResponse.json({ user: null, message: 'User email already exist' })
+            return NextResponse.json({ user: null, message: 'User email already exists' });
         }
+
         const existingUserName = await db.user.findUnique({
             where: { username: username }
-        })
+        });
         if (existingUserName) {
-            return NextResponse.json({ user: null, message: 'Username already exist, try another username' })
+            return NextResponse.json({ user: null, message: 'Username already exists, try another username' });
         }
-        const hashPassword = await hash(password, 10)
+
+        const hashPassword = await hash(password, 10);
         const newUser = await db.user.create({
             data: {
                 email,
                 username,
-                password: hashPassword
+                password: hashPassword,
+                image: imagePath // Save the image path in the database
             }
-        })
-        return NextResponse.json({ user: newUser, message: 'User created successfully' }, { status: 200 })
+        });
+
+        return NextResponse.json({ user: newUser, message: 'User created successfully' }, { status: 200 });
     } catch (error) {
-        return NextResponse.json({ message: 'Something went wrong' }, { status: 500 })
+        console.error(error);
+        return NextResponse.json({ message: 'Something went wrong' }, { status: 500 });
     }
-}
+};

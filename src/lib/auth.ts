@@ -45,17 +45,19 @@ export const authOptions: NextAuthOptions = {
                     id: `${existingUser.id}`,
                     username: existingUser.username,
                     email: existingUser.email,
-                    // isAdmin: existingUser.isAdmin
+                    isAdmin: existingUser.isAdmin,
+                    image: existingUser.image
                 }
             }
         })
     ],
     callbacks: {
-        async jwt({ token, user }: { token: JWT, user?: { username: string } }) {
+        async jwt({ token, user }: { token: JWT, user?: { username: string, isAdmin: boolean } }) {
             if (user) {
                 return {
                     ...token,
-                    username: user.username
+                    username: user.username,
+                    isAdmin: user.isAdmin
                 }
             }
             return token
@@ -65,7 +67,8 @@ export const authOptions: NextAuthOptions = {
                 ...session,
                 user: {
                     ...session.user,
-                    username: token.username
+                    username: token.username,
+                    isAdmin: token.isAdmin
                 }
             }
 

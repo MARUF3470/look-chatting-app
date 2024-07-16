@@ -1,8 +1,12 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import LoginForm from "./LoginForm";
 import RegistrationForm from "./RegistrationForm";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-const AuthTab = () => {
+const AuthTab = async () => {
+  const session = await getServerSession(authOptions);
+  console.log("------->", session);
   return (
     <Tabs defaultValue="login" className="w-[400px] border p-5">
       <h4 className="text-center mb-5">Authentication</h4>

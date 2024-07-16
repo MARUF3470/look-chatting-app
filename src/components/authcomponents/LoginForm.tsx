@@ -13,6 +13,9 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import { signIn } from "next-auth/react";
+import { toast } from "../ui/use-toast";
+import { useRouter } from "next/navigation";
 
 const FormSchema = z.object({
   email: z.string().min(11, {
@@ -24,6 +27,7 @@ const FormSchema = z.object({
 });
 
 const LoginForm = () => {
+  const router = useRouter();
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -32,8 +36,20 @@ const LoginForm = () => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     console.log(data);
+    const signInData = await signIn("credentials", {
+      ...data,
+      redirect: false,
+    });
+    console.log(signInData);
+    if (signInData?.ok) {
+      toast({
+        variant: "default",
+        description: "Login Successfull",
+      });
+      return router.push("/");
+    }
   };
 
   return (
@@ -46,7 +62,7 @@ const LoginForm = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="Email" {...field} />
+                <Input placeholder="Email" type="email" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -59,7 +75,7 @@ const LoginForm = () => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="Password" {...field} />
+                <Input type="password" placeholder="Password" {...field} />
               </FormControl>
               <FormMessage />
             </FormItem>

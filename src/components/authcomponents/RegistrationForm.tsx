@@ -61,13 +61,40 @@ const RegistrationForm = () => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof FormSchema>) => {
-    console.log(data);
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     if (data?.password !== data?.cpassword) {
       toast({
         variant: "destructive",
         description: "Your password and confirm password doesn't match.",
       });
+    }
+    const formData = new FormData();
+    formData.append("username", data.username);
+    formData.append("email", data.email);
+    formData.append("password", data.password);
+    if (data.image) {
+      formData.append("image", data.image);
+    }
+    console.log(data.image);
+    try {
+      const data = await fetch("/api/user", {
+        method: "POST",
+        body: formData,
+      });
+      const result = await data.json();
+      if (!result.user) {
+        return toast({
+          variant: "destructive",
+          description: result.message,
+        });
+      } else {
+        return toast({
+          variant: "default",
+          description: result.message,
+        });
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
