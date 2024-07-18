@@ -3,14 +3,20 @@ import { hash } from "bcrypt";
 import { NextResponse } from "next/server";
 import { join } from "path";
 import { writeFile, mkdir } from "fs/promises";
+import { generateverificationToken } from "@/lib/token";
+import { sendVerificationEmail } from "@/lib/mail";
 
 export const POST = async (req: Request) => {
     try {
         const data = await req.formData();
         const username = data.get("username");
-        const email = data.get("email");
+        const email = data.get("email") as string;
         const password = data.get("password");
         const image = data.get("image");
+
+        const verificationToken = await generateverificationToken(email);
+        console.log(verificationToken, 'vvvvvvvvvv');
+        await sendVerificationEmail(verificationToken.email, verificationToken.token)
 
         if (typeof username !== "string" || typeof email !== "string" || typeof password !== "string") {
             return NextResponse.json({ message: "Invalid input data" }, { status: 400 });
@@ -55,7 +61,7 @@ export const POST = async (req: Request) => {
             }
         });
 
-        return NextResponse.json({ user: newUser, message: 'User created successfully' }, { status: 200 });
+        return NextResponse.json({ user: newUser, message: 'User created successfully, verification email sent' }, { status: 200 });
     } catch (error) {
         console.error(error);
         return NextResponse.json({ message: 'Something went wrong' }, { status: 500 });

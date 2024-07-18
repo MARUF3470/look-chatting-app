@@ -52,6 +52,18 @@ export const authOptions: NextAuthOptions = {
         })
     ],
     callbacks: {
+
+        // async signIn({ user, account }) {
+
+        //     if (account?.provider !== 'credentials') return true
+
+        //     const existingUser = await db.user.findUnique({
+        //         where: { id: user.id }
+        //     })
+
+        //     return true
+        // }
+
         async jwt({ token, user }: { token: JWT, user?: { username: string, isAdmin: boolean } }) {
             if (user) {
                 return {
