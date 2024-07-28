@@ -50,7 +50,8 @@ const FormSchema = z.object({
 const RegistrationForm = () => {
   const { toast } = useToast();
   const [accept, setAccepted] = useState<boolean>(false);
-  console.log(accept);
+  const [loading, setloading] = useState<boolean>(false);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -62,6 +63,7 @@ const RegistrationForm = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    setloading(true);
     if (data?.password !== data?.cpassword) {
       toast({
         variant: "destructive",
@@ -75,21 +77,24 @@ const RegistrationForm = () => {
     if (data.image) {
       formData.append("image", data.image);
     }
-    console.log(data.image);
+    // console.log(data.image);
     try {
       const data = await fetch("/api/user", {
         method: "POST",
         body: formData,
       });
       const result = await data.json();
-      if (!result.user) {
+      console.log(result);
+      if (result.status === 200) {
+        setloading(false);
         return toast({
-          variant: "destructive",
+          variant: "default",
           description: result.message,
         });
       } else {
+        setloading(false);
         return toast({
-          variant: "default",
+          variant: "destructive",
           description: result.message,
         });
       }
@@ -189,7 +194,7 @@ const RegistrationForm = () => {
           </div>
         </div>
         <div className="flex justify-center">
-          <Button disabled={!accept} type="submit">
+          <Button disabled={!accept || loading} type="submit">
             Submit
           </Button>
         </div>
