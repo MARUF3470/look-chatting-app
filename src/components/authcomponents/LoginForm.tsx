@@ -16,6 +16,7 @@ import { useForm } from "react-hook-form";
 import { signIn } from "next-auth/react";
 import { toast } from "../ui/use-toast";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const FormSchema = z.object({
   email: z.string().min(11, {
@@ -87,6 +88,9 @@ const LoginForm = () => {
             </FormItem>
           )}
         />
+        <Button variant="link" size="sm" className="px-2 font-normal">
+          <Link href="/authentication/reset">Forget Password?</Link>
+        </Button>
         <div className="flex justify-center">
           <Button type="submit">Submit</Button>
         </div>

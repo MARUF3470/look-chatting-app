@@ -33,3 +33,12 @@ model VerificationToken {
 
   @@unique([token, email])
 }
+
+model PasswordResetToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([token, email])
+}
