@@ -8,11 +8,11 @@ export default async function Home() {
   const session = await getServerSession(authOptions);
 
   return (
-    <div>
-      Hello next
+    <section className="flex size-full flex-col gap-10">
+      <h1 className="text-3xl font-bold">Home</h1>
       <Button>Click ME</Button>
       <ThemeToggleBtn />
       {session?.user?.email && <Logout />}
-    </div>
+    </section>
   );
 }

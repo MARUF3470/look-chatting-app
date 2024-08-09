@@ -19,11 +19,13 @@ import Link from "next/link";
 import { NewPasswordSchema } from "@/schemas/schema";
 import { startTransition, useState } from "react";
 import { reset } from "@/app/utils/passwordReset";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { newPassword } from "@/app/utils/newPassword";
 
 const NewPasswordForm = () => {
+  const [loading, setLoading] = useState<boolean>(false);
   const param = useSearchParams();
+  const router = useRouter();
   const token = param.get("token");
   console.log(token);
   const form = useForm<z.infer<typeof NewPasswordSchema>>({
@@ -34,19 +36,25 @@ const NewPasswordForm = () => {
   });
   const onSubmit = async (data: z.infer<typeof NewPasswordSchema>) => {
     console.log(data);
+    setLoading(true);
     startTransition(() => {
       newPassword(data, token).then((res) => {
         if (res?.error) {
-          return toast({
+          toast({
             variant: "destructive",
             description: res?.error,
           });
+          setLoading(false);
+          router.push("/authentication");
+          return;
         }
         if (res?.success) {
-          return toast({
+          toast({
             variant: "default",
             description: res?.success,
           });
+          setLoading(false);
+          return;
         }
       });
     });
@@ -71,7 +79,9 @@ const NewPasswordForm = () => {
           <Link href="/authentication">Go back to login.</Link>
         </Button>
         <div className="flex justify-center">
-          <Button type="submit">Submit</Button>
+          <Button disabled={loading} type="submit">
+            Submit
+          </Button>
         </div>
       </form>
     </Form>

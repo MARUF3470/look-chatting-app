@@ -21,6 +21,7 @@ import { startTransition, useState } from "react";
 import { reset } from "@/app/utils/passwordReset";
 
 const ResetForm = () => {
+  const [loading, setLoading] = useState<boolean>(false);
   const form = useForm<z.infer<typeof ResetSchema>>({
     resolver: zodResolver(ResetSchema),
     defaultValues: {
@@ -29,15 +30,18 @@ const ResetForm = () => {
   });
   const onSubmit = async (data: z.infer<typeof ResetSchema>) => {
     console.log(data);
+    setLoading(true);
     startTransition(() => {
       reset(data).then((res) => {
         if (res?.error) {
+          setLoading(false);
           return toast({
             variant: "destructive",
             description: res?.error,
           });
         }
         if (res?.success) {
+          setLoading(false);
           return toast({
             variant: "default",
             description: res?.success,
@@ -67,7 +71,9 @@ const ResetForm = () => {
           <Link href="/authentication">Go back to login.</Link>
         </Button>
         <div className="flex justify-center">
-          <Button type="submit">Submit</Button>
+          <Button disabled={loading} type="submit">
+            Submit
+          </Button>
         </div>
       </form>
     </Form>
