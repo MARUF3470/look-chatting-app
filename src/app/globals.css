@@ -57,6 +57,11 @@
       --chart-4: 280 65% 60%;
       --chart-5: 340 75% 55%;
     }
+    .glassmorphisom{
+      background: rgba(255, 255, 255, .25);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px)
+    }
   }
 
   @layer base {

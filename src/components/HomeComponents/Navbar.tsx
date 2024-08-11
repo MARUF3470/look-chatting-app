@@ -34,7 +34,6 @@ const Navbar = async () => {
               <AvatarFallback>CN</AvatarFallback>
             </Avatar>
           )}
-
           {session?.user?.email && <Logout />}
           <div className="hidden lg:block md:block">
             <ThemeToggleBtn />
