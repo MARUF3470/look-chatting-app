@@ -1,6 +1,7 @@
 import { ThemeProvider } from "@/components/theme-provider";
 import "../globals.css";
 import type { Metadata } from "next";
+import StreamVideoProvider from "../../../providers/StreamClientProvider";
 
 export const metadata: Metadata = {
   title: "Home",
@@ -13,13 +14,15 @@ export default function FrontLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ThemeProvider
-      attribute="class"
-      defaultTheme="system"
-      enableSystem
-      disableTransitionOnChange
-    >
-      {children}
-    </ThemeProvider>
+    <StreamVideoProvider>
+      <ThemeProvider
+        attribute="class"
+        defaultTheme="system"
+        enableSystem
+        disableTransitionOnChange
+      >
+        {children}
+      </ThemeProvider>
+    </StreamVideoProvider>
   );
 }

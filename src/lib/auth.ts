@@ -64,12 +64,13 @@ export const authOptions: NextAuthOptions = {
         //     return true
         // }
 
-        async jwt({ token, user }: { token: JWT, user?: { username: string, isAdmin: boolean } }) {
+        async jwt({ token, user }: { token: JWT, user?: { username: string, isAdmin: boolean, id: string } }) {
             if (user) {
                 return {
                     ...token,
                     username: user.username,
-                    isAdmin: user.isAdmin
+                    isAdmin: user.isAdmin,
+                    id: `${user.id}`
                 }
             }
             return token
@@ -80,7 +81,8 @@ export const authOptions: NextAuthOptions = {
                 user: {
                     ...session.user,
                     username: token.username,
-                    isAdmin: token.isAdmin
+                    isAdmin: token.isAdmin,
+                    id: token.id
                 }
             }
 
