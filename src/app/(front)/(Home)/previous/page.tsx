@@ -1,5 +1,3 @@
-import React from "react";
-
 const Previous = () => {
   return (
     <section className="flex size-full flex-col gap-10">
