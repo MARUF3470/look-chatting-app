@@ -38,12 +38,11 @@ const LoginForm = () => {
   });
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
-    console.log(data);
     const signInData = await signIn("credentials", {
       ...data,
       redirect: false,
     });
-    console.log(signInData);
+
     if (signInData?.ok) {
       toast({
         variant: "default",

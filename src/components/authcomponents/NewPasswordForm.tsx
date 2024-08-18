@@ -27,7 +27,7 @@ const NewPasswordForm = () => {
   const param = useSearchParams();
   const router = useRouter();
   const token = param.get("token");
-  console.log(token);
+
   const form = useForm<z.infer<typeof NewPasswordSchema>>({
     resolver: zodResolver(NewPasswordSchema),
     defaultValues: {
@@ -35,7 +35,6 @@ const NewPasswordForm = () => {
     },
   });
   const onSubmit = async (data: z.infer<typeof NewPasswordSchema>) => {
-    console.log(data);
     setLoading(true);
     startTransition(() => {
       newPassword(data, token).then((res) => {

@@ -11,7 +11,6 @@ const NewVerificationToken = () => {
   const token = searchParams.get("token");
   const data = searchParams.get("data");
 
-  console.log("--->", data);
   useEffect(() => {
     if (data) {
       try {
@@ -26,7 +25,6 @@ const NewVerificationToken = () => {
             setError(data.error);
           })
           .catch((err) => {
-            console.log("--->", err);
             setError("Something went wrong.");
           });
       } catch (error) {

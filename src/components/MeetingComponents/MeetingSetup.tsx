@@ -18,21 +18,19 @@ const MeetingSetup = ({
     throw new Error("usecall must be used within StreamCall Component");
   }
   useEffect(() => {
-    if (call) {
-      if (micToggleOn) {
-        call.microphone.disable();
-        call.camera.disable();
-      } else {
-        call.microphone.enable();
-        call.camera.enable();
-      }
+    if (micToggleOn) {
+      call?.microphone.disable();
+      call?.camera.disable();
+    } else {
+      call?.microphone.enable();
+      call?.camera.enable();
     }
-  }, [micToggleOn, call]);
+  }, [micToggleOn, call?.microphone, call?.camera]);
 
   return (
     <div className="flex h-screen w-full flex-col items-center justify-center gap-3">
       <h1 className="text-2xl font-bold">Setup</h1>
-      {call && <VideoPreview className="w-1/2" />}
+      {<VideoPreview className="w-1/2" />}
       <div className="flex h-16 items-center justify-center gap-3">
         <label className="flex items-center justify-center gap-2 font-medium">
           <input

@@ -11,7 +11,7 @@ import { toast } from "../ui/use-toast";
 const AuthTab = () => {
   const { status } = useSession();
   const router = useRouter();
-  console.log(status);
+
   useEffect(() => {
     if (status === "authenticated") {
       toast({

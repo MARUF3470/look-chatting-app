@@ -11,7 +11,7 @@ const apiKey = process.env.NEXT_PUBLIC_STREAM_API_KEY;
 
 const StreamVideoProvider = ({ children }: { children: ReactNode }) => {
   const { data } = useSession();
-  console.log(data, apiKey);
+
   const [videoClient, setvideoClient] = useState<StreamVideoClient>();
 
   useEffect(() => {

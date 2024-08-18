@@ -10,7 +10,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const Navbar = async () => {
   const session = await getServerSession(authOptions);
-  console.log(session?.user);
+
   return (
     <nav className="flex justify-between z-50 w-full px-6 py-4 lg:px-10 bg-zinc-900">
       <Link href="/" className="flex items-center gap-1">

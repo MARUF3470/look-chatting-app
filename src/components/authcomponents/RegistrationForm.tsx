@@ -77,14 +77,14 @@ const RegistrationForm = () => {
     if (data.image) {
       formData.append("image", data.image);
     }
-    // console.log(data.image);
+
     try {
       const data = await fetch("/api/user", {
         method: "POST",
         body: formData,
       });
       const result = await data.json();
-      console.log(result);
+
       if (result.status === 200) {
         setloading(false);
         return toast({
